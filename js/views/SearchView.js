@@ -1,5 +1,3 @@
-export const search = document.getElementById('search');
-export const submitText = document.querySelector('form')
+import {element} from './base'
+//  console.log(element.searchQuery.value)
 
-const searcedInput = search.value;
- 

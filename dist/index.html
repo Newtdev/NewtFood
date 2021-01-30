@@ -22,7 +22,7 @@
                 <!-- search input container -->
                 <div class="search">
                     <form>
-                        <input type="search" id="search" placeholder="search for food recipe according to their nutrient">
+                        <input type="search" autocomplete="true" id="search" placeholder="search for food recipe according to their nutrient">
                         <button class="search_button">search</button>
                     </form>
                 </div>
@@ -49,51 +49,29 @@
         <section class="recipe_container left_container animate_page hide_page " id="recipe_image">
             <div class="details_container">
                 <!-- loader container {display:none} -->
-                <div class="loader_container">
-                    <div class="loader" id="one"></div>
-                    <div class="loader" id="two"></div>
-                    <div class="loader" id="three"></div>
-                    <div class="loader" id="four"></div>
+                <div class="loader_container" id="recipe_loader">
+                    <div class="loader"></div>
                 </div>
-                <ul class="recipe_container">
-                    <li>
-                        <h1 id="recipe_heading">coconut recipe</h1>
-                        <span class="cover_container">
-                            <img src="/pexels-photo-678725.6ee2c5b8.jpeg" alt="image" id="one">
-                        </span>
-                        <div class="display_eye">
-                            <small class="eye">
-                                <img src="/eye.7cf8473d.png" alt="eye">
-                            </small>
-                        </div>
-                    </li>
-                    <li>
-                        <h1 id="recipe_heading">coconut recipe</h1>
-                        <span class="cover_container">
-                            <img src="/pexels-photo-678725.6ee2c5b8.jpeg" alt="image" id="one">
-                        </span>
-                        <span class="display_eye">
-                            <small class="eye">
-                                <img src="/eye.7cf8473d.png" alt="eye">
-                            </small>
-                        </span>
-                    </li>
+                 <ul class="recipe__container">
+                       <!-- <li id="recipe__list">
+                             <img src="./pexels-photo-678725.jpeg" alt="image" id="one">
+                    </li> -->
+                     
                 </ul>
+                </div>
                 <!-- pagination section -->
                 <div class="pagination_container ">
                     <button class="previous pagination">prev</button>
                     <button class="next pagination">next</button>
                 </div>
-        </div></section>
+        </section>
         <!-- recipe details container -->
         <section class="recipe_details middle animate_page">
             <div class="details-container">
                 <!-- loader container {display:none} -->
-                <div class="loader_container details">
+                <div class="loader_container details" id="details__loader">
                     <div class="loader" id="one"></div>
-                    <div class="loader" id="two"></div>
-                    <div class="loader" id="three"></div>
-                    <div class="loader" id="four"></div>
+
                 </div>
                 <div class="image_container">
                     <img src="/pexels-photo-678725.6ee2c5b8.jpeg" alt="heart">
@@ -103,26 +81,39 @@
                     <div class="overlay"></div>
                 </div>
                 <div class="recipe_details_container">
-                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eveniet, doloribus. Ipsum molestias
-                        eum, quia, provident dicta dolorem voluptatum quasi magnam quam ad nihil consequatur soluta
-                        pariatur quas exercitationem porro laudantium in temporibus ullam. Voluptatum praesentium
-                        quod
-                        vel harum, neque illum vitae. Nobis a nesciunt velit maxime aliquam ab perferendis numquam.
+                     <span class="recipe__label">
+                        <h1>Russian Pizza</h1>
+                    </span>
+                    <span class="calories">
+                        <h1>calories: <small>200kg</small></h1>
+                    </span>
+                    <span class="total__nutrient">
+                        <span>
 
-                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Deserunt necessitatibus, magni
-                        tempore
-                        inventore nisi eos ea adipisci, quae et, dignissimos molestias cum architecto fugiat soluta
-                        voluptates saepe id sed voluptatum eum accusantium! Tempore repudiandae sint, dolore
-                        similique,
-                        odit iure, perspiciatis omnis reprehenderit ullam esse accusamus officiis! Soluta sed libero
-                        reiciendis cupiditate accusantium beatae totam! Alias nostrum debitis rerum, ex dolore
-                        asperiores, deleniti cum minus at doloribus reprehenderit pariatur illo porro amet
-                        praesentium
-                        voluptate. Fuga repudiandae magni tempore sint nesciunt odio illum quod ut vero, unde
-                        voluptatem
-                        quas modi magnam minus asperiores itaque, accusantium voluptas ratione. Sit natus cumque
-                        impedit
-                        nemo?</p>
+                            <h1> Total Nutrients</h1>
+                        </span>
+                        <ul>
+                            <li>Calcium</li>
+                            <li>Carbohydrate</li>
+                            <li>Fatty Acid</li>
+                            <li>Vitamins</li>
+                            <li>Protein</li>
+                        </ul>
+                    </span>
+                    <span class="ingredient__list">
+                        <span>
+
+                            <h1>Ingredient List</h1>
+                        </span>
+                        <ul>
+                            <li>Tomattoes</li>
+                            <li>Pepper</li>
+                            <li>Onions</li>
+                            <li>Oil</li>
+                            <li>Butter</li>
+                        </ul>
+                    </span>
+                    
                 </div>
             </div>
         </section>

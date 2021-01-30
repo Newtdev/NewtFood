@@ -868,14 +868,34 @@ try {
   Function("r", "regeneratorRuntime = r")(runtime);
 }
 
-},{}],"js/models/Tab.js":[function(require,module,exports) {
-const animate = document.querySelectorAll(".animate_page");
-const button = document.querySelector(".button");
-const searchIcon = document.querySelector(".searchIcon");
-const search = document.querySelector(".search");
-const small = document.querySelectorAll("small");
-/** get each page on click on the icon for mobile view */
+},{}],"js/views/base.js":[function(require,module,exports) {
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.element = void 0;
+const element = {
+  animate: document.querySelectorAll(".animate_page"),
+  searchQuery: document.getElementById('search'),
+  submitText: document.querySelector('form'),
+  buttons: document.querySelector(".button"),
+  searchIcon: document.querySelector(".searchIcon"),
+  search: document.querySelector(".search"),
+  small: document.querySelectorAll("small"),
+  dataList: document.querySelector('.recipe__container'),
+  recipeLoader: document.getElementById('recipe_loader'),
+  recipeContainer: document.querySelector('.recipe__container')
+};
+exports.element = element;
+console.log(element.recipeContainer.getBoundingClientRect().height);
+console.log(element.searchQuery);
+},{}],"js/views/Tab.js":[function(require,module,exports) {
+"use strict";
+
+var _base = require("./base");
+
+/** get each page on click on the icon for mobile view */
 const tab = btn => {
   btn.addEventListener("click", e => {
     const id = e.target.closest(".mobile_nav");
@@ -889,12 +909,12 @@ const tab = btn => {
   });
 };
 
-tab(button);
+tab(_base.element.buttons);
 /** add the name to the button icon */
 
 function addIconName(elem) {
   if (elem) {
-    small.forEach(small => {
+    _base.element.small.forEach(small => {
       small.classList.remove("hide_small");
     });
   }
@@ -908,11 +928,12 @@ function pageOnClicked(id) {
     const pageId = document.getElementById(clickedID);
     /**remove hide page class from all section */
 
-    animate.forEach(section => {
+    _base.element.animate.forEach(section => {
       section.classList.remove("hide_page");
     });
     /**add hide page class to the page with id that matches the icon id
      */
+
 
     pageId.classList.add("hide_page");
   }
@@ -921,13 +942,13 @@ function pageOnClicked(id) {
 
 
 const openSearchBar = () => {
-  searchIcon.addEventListener("click", () => {
-    search.classList.toggle("active");
+  _base.element.searchIcon.addEventListener("click", () => {
+    _base.element.search.classList.toggle("active");
   });
 };
 
 openSearchBar();
-},{}],"node_modules/axios/lib/helpers/bind.js":[function(require,module,exports) {
+},{"./base":"js/views/base.js"}],"node_modules/axios/lib/helpers/bind.js":[function(require,module,exports) {
 'use strict';
 
 module.exports = function bind(fn, thisArg) {
@@ -2711,15 +2732,61 @@ module.exports.default = axios;
 
 },{"./utils":"node_modules/axios/lib/utils.js","./helpers/bind":"node_modules/axios/lib/helpers/bind.js","./core/Axios":"node_modules/axios/lib/core/Axios.js","./core/mergeConfig":"node_modules/axios/lib/core/mergeConfig.js","./defaults":"node_modules/axios/lib/defaults.js","./cancel/Cancel":"node_modules/axios/lib/cancel/Cancel.js","./cancel/CancelToken":"node_modules/axios/lib/cancel/CancelToken.js","./cancel/isCancel":"node_modules/axios/lib/cancel/isCancel.js","./helpers/spread":"node_modules/axios/lib/helpers/spread.js"}],"node_modules/axios/index.js":[function(require,module,exports) {
 module.exports = require('./lib/axios');
-},{"./lib/axios":"node_modules/axios/lib/axios.js"}],"js/models/Search.js":[function(require,module,exports) {
+},{"./lib/axios":"node_modules/axios/lib/axios.js"}],"js/models/Fetch.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.appState = exports.default = void 0;
+exports.getRecipeData = exports.getData = void 0;
+
+var _Search = _interopRequireWildcard(require("./Search"));
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+/** getting fetched data from the class */
+const getData = recipe => {
+  const recipeData = recipe.data;
+  const {
+    hits
+  } = recipeData;
+  const allData = getRecipeData(hits);
+  return allData;
+};
+/**Fetch recipe data */
+
+
+exports.getData = getData;
+
+const getRecipeData = hits => {
+  const getRecipe = hits.map(data => {
+    return {
+      image: data.recipe.image,
+      label: data.recipe.label,
+      ingredientLines: data.recipe.ingredientLines,
+      calories: data.recipe.calories,
+      dietLabels: data.recipe.dietLabels,
+      totalNutrients: data.recipe.totalNutrients
+    };
+    return image, label, ingredientLines, calories, dietLabels, totalNutrient, totalNutrients;
+  });
+  return getRecipe;
+};
+
+exports.getRecipeData = getRecipeData;
+},{"./Search":"js/models/Search.js"}],"js/models/Search.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
 
 var _axios = _interopRequireDefault(require("axios"));
+
+var _Fetch = require("./Fetch");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2733,14 +2800,8 @@ class SearchTerm {
       const apikey = "10cb8379af992120842d026d1a9e5dfd";
       const apiID = "6a22847e";
       let response = await (0, _axios.default)("https://api.edamam.com/search?q=".concat(this.query, "&app_id=").concat(apiID, "&app_key=").concat(apikey));
-      const recipeData = response.data;
-      const {
-        hits
-      } = recipeData;
-      this.recipeData = hits; //  console.log(recipeData);
-
-      getRecipeData(this.recipeData);
-      console.log(getRecipeData(this.recipeData));
+      const savedResponse = (0, _Fetch.getData)(response);
+      return savedResponse;
     } catch (error) {
       console.log(error);
       throw error;
@@ -2750,64 +2811,108 @@ class SearchTerm {
 }
 
 exports.default = SearchTerm;
-const appState = {
-  recipe: {},
-  search: {
-    query: '',
-    result: []
-  },
-  bookmark: []
-};
-exports.appState = appState;
-
-const getRecipeData = hits => {
-  const getRecipe = hits.map(data => {
-    return {
-      image: data.recipe.image,
-      label: data.recipe.label,
-      ingredientLines: data.recipe.ingredientLines,
-      calories: data.recipe.calories,
-      dietLabels: data.recipe.dietLabels,
-      totalNutrients: data.recipe.totalNutrients
-    };
-  });
-  return getRecipe;
-};
-},{"axios":"node_modules/axios/index.js"}],"js/views/SearchView.js":[function(require,module,exports) {
+},{"axios":"node_modules/axios/index.js","./Fetch":"js/models/Fetch.js"}],"js/views/recipeDOM.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.submitText = exports.search = void 0;
-const search = document.getElementById('search');
-exports.search = search;
-const submitText = document.querySelector('form');
-exports.submitText = submitText;
-const searcedInput = search.value;
-},{}],"js/index.js":[function(require,module,exports) {
+exports.displayRecipeData = void 0;
+
+var _base = require("./base");
+
+const displayRecipeData = recipeData => {
+  const displayData = recipeData.map(recipe => {
+    return "\n                <li id=\"recipe__list\">\n                <img src=".concat(recipe.image, " alt=").concat(recipe.label, " id=\"one\">\n       </li>  ");
+  }).join("");
+
+  _base.element.dataList.insertAdjacentHTML('afterbegin', displayData);
+}; // <h1 id="recipe_heading">coconut recipe</h1>
+
+
+exports.displayRecipeData = displayRecipeData;
+},{"./base":"js/views/base.js"}],"js/views/addLoader.js":[function(require,module,exports) {
 "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.loader = void 0;
+
+var _base = require("./base");
+
+var _recipeDOM = require("./recipeDOM");
+
+const loader = recipeData => {
+  _base.element.recipeLoader.classList.add("hide");
+
+  setTimeout(() => {
+    _base.element.recipeLoader.classList.remove("hide");
+
+    setTimeout(() => {});
+  }, 5000);
+};
+
+exports.loader = loader;
+},{"./base":"js/views/base.js","./recipeDOM":"js/views/recipeDOM.js"}],"js/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.queryValue = void 0;
 
 require("regenerator-runtime/runtime");
 
-var _Tab = _interopRequireDefault(require("./models/Tab"));
+var _Tab = _interopRequireDefault(require("./views/Tab"));
 
 var _Search = _interopRequireDefault(require("./models/Search"));
 
-var _SearchView = _interopRequireDefault(require("./views/SearchView"));
+var _base = require("./views/base");
+
+var _Fetch = require("./models/Fetch");
+
+var _recipeDOM = require("./views/recipeDOM");
+
+var _addLoader = require("./views/addLoader");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-addEventListener('submit', e => {
-  e.preventDefault();
-  const term = new _Search.default(search.value).fetchData(); // console.log(search.value);
-  // const term = new SearchTerm(search.value).fetchData();
-  //    get the value of input.
-  //    update app state
-  //   add loader
-  //  display data: image and label
-});
-},{"regenerator-runtime/runtime":"node_modules/regenerator-runtime/runtime.js","./models/Tab":"js/models/Tab.js","./models/Search":"js/models/Search.js","./views/SearchView":"js/views/SearchView.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+let searchValue = _base.element.searchQuery;
+const appState = {};
+
+_base.element.submitText.addEventListener('submit', e => {
+  e.preventDefault(); //    GET THE INPUTED VALUE
+
+  queryValue(); //   ADD LOADER AND FETCH DATA
+
+  (0, _addLoader.loader)(fetchQuery()); // CLEAR INPUT ON CLICK OF SUBMIT BUTTON
+
+  searchValue.value = '';
+}); //  GET SEARCHED RECIPE INPUTS
+
+
+const queryValue = () => {
+  if (searchValue.value == '') {
+    alert('input a food recipe of your choice');
+    console.log("input a food recipe of your choice");
+  } else {
+    fetchQuery(searchValue);
+  }
+}; //  GET ALL DATA FROM THE NEW OBJECTS AND SAVED TO THE APP STATE
+
+
+exports.queryValue = queryValue;
+
+const fetchQuery = async term => {
+  appState.term = new _Search.default(term); // UPDATE APP STATE
+
+  let getQuery = await appState.term.fetchData(); // DISPLAY RECIPE
+
+  (0, _recipeDOM.displayRecipeData)(getQuery);
+  return getQuery;
+}; // fetchQuery("chicken")
+},{"regenerator-runtime/runtime":"node_modules/regenerator-runtime/runtime.js","./views/Tab":"js/views/Tab.js","./models/Search":"js/models/Search.js","./views/base":"js/views/base.js","./models/Fetch":"js/models/Fetch.js","./views/recipeDOM":"js/views/recipeDOM.js","./views/addLoader":"js/views/addLoader.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -2835,7 +2940,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57620" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49683" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

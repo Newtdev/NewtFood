@@ -1,24 +1,44 @@
 import 'regenerator-runtime/runtime';
-import Tab from "./models/Tab";
-import SearchTerm from "./models/Search"
-import SearchView from './views/SearchView'
+import Tab from "./views/Tab";
+import SearchTerm from "./models/Search";
+import {element} from './views/base';
+import {getData} from './models/Fetch';
+import {getRecipeData} from './models/Fetch';
+import {displayRecipeData} from './views/recipeDOM';
+import {addLoader} from './views/addLoader'
+import {loader} from './views/addLoader'
+let searchValue = element.searchQuery;
 
+const appState = {}
 
-
-
-
-
-addEventListener('submit', (e)=> {
+element.submitText.addEventListener('submit', (e)=> {
   e.preventDefault();
-  const term = new SearchTerm(search.value).fetchData();
-  // console.log(search.value);
-  // const term = new SearchTerm(search.value).fetchData();
-  
-//    get the value of input.
-//    update app state
-//   add loader
-//  display data: image and label
+  //    GET THE INPUTED VALUE
+    queryValue()
+  //   ADD LOADER AND FETCH DATA
+  loader(fetchQuery());
+  // CLEAR INPUT ON CLICK OF SUBMIT BUTTON
+  searchValue.value = '';
 })
+//  GET SEARCHED RECIPE INPUTS
+export const queryValue = () => {
+  if(searchValue.value == ''){
+    alert('input a food recipe of your choice');
+    console.log("input a food recipe of your choice")
+  }
+    else{
+      fetchQuery(searchValue)
+    } 
+ };
 
-
+//  GET ALL DATA FROM THE NEW OBJECTS AND SAVED TO THE APP STATE
+const fetchQuery = async (term) => {
+  appState.term = new SearchTerm(term);
+  // UPDATE APP STATE
+  let getQuery = await appState.term.fetchData()
+  // DISPLAY RECIPE
+  displayRecipeData(getQuery)
+  return getQuery;
+}
+// fetchQuery("chicken")
 
