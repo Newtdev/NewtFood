@@ -885,11 +885,11 @@ const element = {
   small: document.querySelectorAll("small"),
   dataList: document.querySelector('.recipe__container'),
   recipeLoader: document.getElementById('recipe_loader'),
-  recipeContainer: document.querySelector('.recipe__container')
-};
+  recipeContainer: document.querySelector('.recipe__container'),
+  leftContainer: document.querySelector('.left_container')
+}; // console.log(element.searchQuery);
+
 exports.element = element;
-console.log(element.recipeContainer.getBoundingClientRect().height);
-console.log(element.searchQuery);
 },{}],"js/views/Tab.js":[function(require,module,exports) {
 "use strict";
 
@@ -2799,8 +2799,9 @@ class SearchTerm {
     try {
       const apikey = "10cb8379af992120842d026d1a9e5dfd";
       const apiID = "6a22847e";
-      let response = await (0, _axios.default)("https://api.edamam.com/search?q=".concat(this.query, "&app_id=").concat(apiID, "&app_key=").concat(apikey));
+      let response = await (0, _axios.default)("https://api.edamam.com/search?q=".concat(this.query, "&app_id=").concat(apiID, "&app_key=").concat(apikey, "&from=0&to=10"));
       const savedResponse = (0, _Fetch.getData)(response);
+      console.log(response);
       return savedResponse;
     } catch (error) {
       console.log(error);
@@ -2823,14 +2824,28 @@ var _base = require("./base");
 
 const displayRecipeData = recipeData => {
   const displayData = recipeData.map(recipe => {
-    return "\n                <li id=\"recipe__list\">\n                <img src=".concat(recipe.image, " alt=").concat(recipe.label, " id=\"one\">\n       </li>  ");
+    return "\n                <li id=".concat(recipe.label, ">\n                <img src=").concat(recipe.image, " alt=").concat(recipe.label, " id=\"one\">\n       </li>  ");
   }).join("");
-
-  _base.element.dataList.insertAdjacentHTML('afterbegin', displayData);
-}; // <h1 id="recipe_heading">coconut recipe</h1>
+  clearDOM(displayRecipeData, displayData);
+}; // CLEAR RECIPE IMAGE DOM WHEN ANOTHER SEARCH IS MADE
 
 
 exports.displayRecipeData = displayRecipeData;
+
+const clearDOM = (recipe, data) => {
+  if (recipe) {
+    EmptyDOM();
+
+    _base.element.dataList.insertAdjacentHTML('afterbegin', data);
+  } else {
+    _base.element.dataList.insertAdjacentHTML('afterbegin', data);
+  }
+}; // SET RECIPE IMAGE DOM TO EMPTY
+
+
+const EmptyDOM = () => {
+  _base.element.dataList.innerHTML = '';
+}; // <h1 id="recipe_heading">coconut recipe</h1>
 },{"./base":"js/views/base.js"}],"js/views/addLoader.js":[function(require,module,exports) {
 "use strict";
 
@@ -2854,7 +2869,26 @@ const loader = recipeData => {
 };
 
 exports.loader = loader;
-},{"./base":"js/views/base.js","./recipeDOM":"js/views/recipeDOM.js"}],"js/index.js":[function(require,module,exports) {
+},{"./base":"js/views/base.js","./recipeDOM":"js/views/recipeDOM.js"}],"js/views/mobile.js":[function(require,module,exports) {
+"use strict";
+
+var _base = require("./base");
+
+const mediaQuery = window.matchMedia("(max-width:768px)");
+
+const detailsLenght = e => {
+  console.log(e);
+
+  if (e.matches) {
+    const recipeContainerHeight = _base.element.recipeContainer.getBoundingClientRect().height; // element.leftContainer.style.height= `${recipeContainerHeight}`;
+
+
+    const leftHeight = _base.element.leftContainer.getBoundingClientRect().height + 100;
+  }
+};
+
+mediaQuery.addListener(detailsLenght(mediaQuery));
+},{"./base":"js/views/base.js"}],"js/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2876,9 +2910,15 @@ var _recipeDOM = require("./views/recipeDOM");
 
 var _addLoader = require("./views/addLoader");
 
+var mobileDOM = _interopRequireWildcard(require("./views/mobile"));
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-let searchValue = _base.element.searchQuery;
+// let searchValue = element.searchQuery;
 const appState = {};
 
 _base.element.submitText.addEventListener('submit', e => {
@@ -2886,18 +2926,16 @@ _base.element.submitText.addEventListener('submit', e => {
 
   queryValue(); //   ADD LOADER AND FETCH DATA
 
-  (0, _addLoader.loader)(fetchQuery()); // CLEAR INPUT ON CLICK OF SUBMIT BUTTON
+  (0, _addLoader.loader)(fetchQuery(_base.element.searchQuery.value)); // CLEAR INPUT ON CLICK OF SUBMIT BUTTON
 
-  searchValue.value = '';
+  _base.element.searchQuery.value = '';
 }); //  GET SEARCHED RECIPE INPUTS
 
 
 const queryValue = () => {
-  if (searchValue.value == '') {
+  if (_base.element.searchQuery.value == '') {
     alert('input a food recipe of your choice');
     console.log("input a food recipe of your choice");
-  } else {
-    fetchQuery(searchValue);
   }
 }; //  GET ALL DATA FROM THE NEW OBJECTS AND SAVED TO THE APP STATE
 
@@ -2905,14 +2943,16 @@ const queryValue = () => {
 exports.queryValue = queryValue;
 
 const fetchQuery = async term => {
-  appState.term = new _Search.default(term); // UPDATE APP STATE
+  appState.term = new _Search.default(term);
+  console.log(appState.term); // UPDATE APP STATE
 
   let getQuery = await appState.term.fetchData(); // DISPLAY RECIPE
 
   (0, _recipeDOM.displayRecipeData)(getQuery);
+  console.log((0, _recipeDOM.displayRecipeData)(getQuery));
   return getQuery;
 }; // fetchQuery("chicken")
-},{"regenerator-runtime/runtime":"node_modules/regenerator-runtime/runtime.js","./views/Tab":"js/views/Tab.js","./models/Search":"js/models/Search.js","./views/base":"js/views/base.js","./models/Fetch":"js/models/Fetch.js","./views/recipeDOM":"js/views/recipeDOM.js","./views/addLoader":"js/views/addLoader.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"regenerator-runtime/runtime":"node_modules/regenerator-runtime/runtime.js","./views/Tab":"js/views/Tab.js","./models/Search":"js/models/Search.js","./views/base":"js/views/base.js","./models/Fetch":"js/models/Fetch.js","./views/recipeDOM":"js/views/recipeDOM.js","./views/addLoader":"js/views/addLoader.js","./views/mobile":"js/views/mobile.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -2940,7 +2980,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49683" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63873" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

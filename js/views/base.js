@@ -8,8 +8,8 @@ export const element = {
   small : document.querySelectorAll("small"),
   dataList: document.querySelector('.recipe__container'),
   recipeLoader: document.getElementById('recipe_loader'),
-  recipeContainer: document.querySelector('.recipe__container')
+  recipeContainer: document.querySelector('.recipe__container'),
+  leftContainer: document.querySelector('.left_container')
 
 };
-console.log(element.recipeContainer.getBoundingClientRect().height);
-console.log(element.searchQuery);
+// console.log(element.searchQuery);
